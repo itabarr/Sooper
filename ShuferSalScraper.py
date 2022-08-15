@@ -7,7 +7,7 @@ from DownloadUtils import *
 
 
 def DownloadAllPages():
-    MainUrl = 'http://prices.super-pharm.co.il/?type=&page='
+    MainUrl = 'http://prices.shufersal.co.il/?page='
     DownloadPath = r'C:\Users\as\Sooper\SeleniumDownload\\'
 
     options = webdriver.ChromeOptions()
@@ -40,7 +40,7 @@ def DownloadOnePage(Url, driver):
     driver.get(Url)
     time.sleep(5)
 
-    LinksElements = driver.find_elements(By.CLASS_NAME, "price_item_link")
+    LinksElements = LinksElements = driver.find_elements(By.LINK_TEXT, "לחץ להורדה")
     for LinkElement in LinksElements:
         LinkElement.click()
 
