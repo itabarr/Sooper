@@ -6,8 +6,6 @@ import time
 from Scraper.ScraperUtils import *
 
 def DownloadAllPages():
-    MainUrl = 'http://prices.shufersal.co.il/?page='
-    DownloadPath = r'C:\Users\itaba\Sooper\Scraper\SeleniumDownload'
 
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
@@ -17,7 +15,7 @@ def DownloadAllPages():
              "directory_upgrade": True}
     options.add_experimental_option("prefs", prefs)
 
-    driver = webdriver.Chrome(service=Service('Scraper/chromedriver.exe'), options=options)
+    driver = webdriver.Chrome(service=Service('./chromedriver.exe'), options=options)
 
 
     EmptyDir(DownloadPath)
@@ -49,6 +47,9 @@ def DownloadOnePage(Url, driver):
 
 
 if __name__ == '__main__':
+    #DownloadAllPages()
 
-    ExtractAndSaveGzip(r'C:\Users\itaba\Sooper\Scraper\SeleniumDownload\Price7290027600007-001-202208161400.gz')
-    DownloadAllPages()
+    MainUrl = 'http://prices.shufersal.co.il/?page='
+    DownloadPath = r'C:\Users\as\Sooper\SeleniumDownload'
+
+    ExtractDir(DownloadPath)
