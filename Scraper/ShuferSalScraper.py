@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 import time
 from Scraper.ScraperUtils import *
 
-def DownloadAllPages():
+def DownloadAllPages(DownloadPath , MainUrl):
 
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
@@ -19,16 +19,22 @@ def DownloadAllPages():
 
 
     EmptyDir(DownloadPath)
+    driver.get(MainUrl)
+    last_page_num = GetLastPage(driver)
+
     PageNum = 1
     while True:
+        print(f'Download page number {PageNum}.')
         curUrl = MainUrl + str(PageNum)
-        numOfFiles = DownloadOnePage(curUrl, driver)
 
+        numOfFiles = DownloadOnePage(curUrl, driver)
         if numOfFiles == 0:
             break
 
-        PageNum+=1
 
+        if PageNum == last_page_num:
+            break
+        PageNum += 1
     time.sleep(5)
 
 
@@ -37,19 +43,22 @@ def DownloadOnePage(Url, driver):
     driver.get(Url)
     time.sleep(5)
 
-    LinksElements = LinksElements = driver.find_elements(By.LINK_TEXT, "לחץ להורדה")
+    LinksElements = driver.find_elements(By.LINK_TEXT, "לחץ להורדה")
     for LinkElement in LinksElements:
         LinkElement.click()
 
     return len(LinksElements)
 
 
+def GetLastPage(driver):
+    elem = driver.find_element(By.LINK_TEXT, ">>")
+    last_page_num = int(elem.get_attribute('href').split('=')[-1])
 
+    return last_page_num
 
 if __name__ == '__main__':
-    #DownloadAllPages()
-
     MainUrl = 'http://prices.shufersal.co.il/?page='
     DownloadPath = r'C:\Users\as\Sooper\SeleniumDownload'
 
+    DownloadAllPages(DownloadPath, MainUrl)
     ExtractDir(DownloadPath)

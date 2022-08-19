@@ -36,8 +36,10 @@ def validateDir(dir_path, xsd_path, toprint = None):
 
     return f"Folder: {dir_path} relevant files are valid with Schema: {xsd_path}."
 
-xml_path = r'C:\Users\as\Sooper\SeleniumDownload\Price7290027600007-001-202208181900.xml'
-xsd_path = r'C:\Users\as\Sooper\DB\PriceFull.xsd'
-dir_path = r'C:\Users\as\Sooper\SeleniumDownload'
+if __name__ == '__main__':
 
-print(validateDir(dir_path ,xsd_path, toprint= True))
+    xml_path = r'C:\Users\as\Sooper\SeleniumDownload\Price7290027600007-001-202208181900.xml'
+    xsd_path = r'C:\Users\as\Sooper\DB\xsd\PriceFull.xsd'
+    dir_path = r'C:\Users\as\Sooper\SeleniumDownload'
+
+    print(validateDir(dir_path ,xsd_path, toprint= True))
