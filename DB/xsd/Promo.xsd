@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ChainId" type="xs:unsignedLong" />
+        <xs:element name="SubChainId" type="xs:unsignedByte" />
+        <xs:element name="StoreId" type="xs:unsignedByte" />
+        <xs:element name="BikoretNo" type="xs:unsignedByte" />
+        <xs:element name="DllVerNo" type="xs:string" />
+        <xs:element name="Promotions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Promotion">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="PromotionId" type="xs:unsignedInt" />
+                    <xs:element name="AllowMultipleDiscounts" type="xs:unsignedByte" />
+                    <xs:element name="PromotionDescription" type="xs:string" />
+                    <xs:element name="PromotionUpdateDate" type="xs:string" />
+                    <xs:element name="PromotionStartDate" type="xs:date" />
+                    <xs:element name="PromotionStartHour" type="xs:string" />
+                    <xs:element name="PromotionEndDate" type="xs:date" />
+                    <xs:element name="PromotionEndHour" type="xs:string" />
+                    <xs:element name="IsWeightedPromo" type="xs:unsignedByte" />
+                    <xs:element name="MinQty" type="xs:decimal" />
+                    <xs:element name="DiscountType" type="xs:unsignedByte" />
+                    <xs:element name="RewardType" type="xs:unsignedByte" />
+                    <xs:element name="DiscountRate" type="xs:unsignedShort" />
+                    <xs:element name="MinNoOfItemOfered" type="xs:unsignedByte" />
+                    <xs:element name="PromotionItems">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="Item">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="ItemCode" type="xs:unsignedLong" />
+                                <xs:element name="ItemType" type="xs:unsignedByte" />
+                                <xs:element name="IsGiftItem" type="xs:unsignedByte" />
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Count" type="xs:unsignedByte" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="AdditionalRestrictions">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="AdditionalIsCoupon" type="xs:unsignedByte" />
+                          <xs:element name="AdditionalGiftCount" type="xs:unsignedByte" />
+                          <xs:element name="AdditionalIsTotal" type="xs:unsignedByte" />
+                          <xs:element name="AdditionalIsActive" type="xs:unsignedByte" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Clubs">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ClubId" type="xs:unsignedByte" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Count" type="xs:unsignedByte" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
