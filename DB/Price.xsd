@@ -34,7 +34,7 @@
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
-            <xs:attribute name="Count" type="xs:unsignedByte" use="required" />
+            <xs:attribute name="Count" type="xs:integer" use="required" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>

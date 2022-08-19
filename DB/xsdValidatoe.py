@@ -6,16 +6,16 @@ def validateXmlFile(xml_path, xsd_path):
     schema = xmlschema.XMLSchema(xsd_path)
     try:
         result = schema.validate(xml_path)
-        return True
+        return "Valid"
 
     except Exception as e:
-        print(e)
+        return e
 
 def CharIntSplit(s):
     return re.split(r"\d+", s)
 
 
-def validateDir(dir_path, xsd_path, print = None):
+def validateDir(dir_path, xsd_path, toprint = None):
     xsd_type = os.path.basename(xsd_path).split('.')[0]
 
     for file in os.listdir(dir_path):
@@ -26,13 +26,18 @@ def validateDir(dir_path, xsd_path, print = None):
         if file_extension == '.xml' and file_type == xsd_type:
             val_result = validateXmlFile(full_file_path, xsd_path)
 
-            if print == True:
-                val_result = str(val_result)
+            if toprint == True:
+                print(f"File name {file} validation status is: {val_result}")
 
 
+            if val_result != 'Valid':
+                raise Exception(f"File name {file} validation failed with status: {val_result}")
+
+
+    return f"Folder: {dir_path} relevant files are valid with Schema: {xsd_path}."
 
 xml_path = r'C:\Users\as\Sooper\SeleniumDownload\Price7290027600007-001-202208181900.xml'
 xsd_path = r'C:\Users\as\Sooper\DB\Price.xsd'
 dir_path = r'C:\Users\as\Sooper\SeleniumDownload'
 
-validateDir(dir_path ,xsd_path, print= True)
+print(validateDir(dir_path ,xsd_path, toprint= False))
