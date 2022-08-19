@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ChainId" type="xs:unsignedLong" />
+        <xs:element name="SubChainId" type="xs:unsignedByte" />
+        <xs:element name="StoreId" type="xs:unsignedByte" />
+        <xs:element name="BikoretNo" type="xs:unsignedByte" />
+        <xs:element name="DllVerNo" type="xs:string" />
+        <xs:element name="Items">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="Item">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="PriceUpdateDate" type="xs:string" />
+                    <xs:element name="ItemCode" type="xs:unsignedLong" />
+                    <xs:element name="ItemType" type="xs:unsignedByte" />
+                    <xs:element name="ItemName" type="xs:string" />
+                    <xs:element name="ManufacturerName" type="xs:string" />
+                    <xs:element name="ManufactureCountry" type="xs:string" />
+                    <xs:element name="ManufacturerItemDescription" type="xs:string" />
+                    <xs:element name="UnitQty" type="xs:string" />
+                    <xs:element name="Quantity" type="xs:decimal" />
+                    <xs:element name="bIsWeighted" type="xs:unsignedByte" />
+                    <xs:element name="UnitOfMeasure" type="xs:string" />
+                    <xs:element name="QtyInPackage" type="xs:unsignedByte" />
+                    <xs:element name="ItemPrice" type="xs:decimal" />
+                    <xs:element name="UnitOfMeasurePrice" type="xs:decimal" />
+                    <xs:element name="AllowDiscount" type="xs:unsignedByte" />
+                    <xs:element name="ItemStatus" type="xs:unsignedByte" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Count" type="xs:unsignedByte" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
