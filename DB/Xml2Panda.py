@@ -3,6 +3,8 @@ import sqlite3
 import os
 from DB.XsdValidator import CharIntSplit
 import xml.etree.ElementTree as ET
+import time
+
 
 def PriceXml2Pandas(xmlfile):
 
@@ -50,14 +52,22 @@ def Promo_Insert_dir_2_DB(dir_path, db , table, general_type):
             Insert_dataframe_2_DB(PromoXml2Pandas(full_file_path),db , table)
 
             print(f"Inserted {file} to {db}.")
-
 def ParsePromoXml(promoxmlfile):
+    db = sqlite3.connect(r'C:\Users\as\Sooper\DB\db\PromoFull.db')
+    cur = db.cursor()
+
+
+    output = pd.DataFrame()
+
     tree = ET.parse(promoxmlfile)
 
     outer_data = tree.findall('./')
     promos = tree.findall(".//Promotion")
     promos_elem = tree.find(".//Promotions")
     outer_data.remove(promos_elem)
+
+
+    create = True
 
     for promo in promos:
         promo_items = promo.findall('.//Item')
@@ -71,9 +81,39 @@ def ParsePromoXml(promoxmlfile):
 
         for item in promo_items:
             item.extend(promo)
-            print_xml_node_childs(item)
-            x = 12
-    x = 1
+            #print_xml_node_childs(item)
+
+            item_dict = TreeItem2Dict(item)
+
+
+
+            if create ==True:
+                df = pd.DataFrame.from_dict(item_dict, orient = 'index')
+                df = df.transpose()
+
+                Insert_dataframe_2_DB(df, r'C:\Users\as\Sooper\DB\db\PromoFull.db','Promotions')
+                create = False
+
+            else:
+                sql = 'INSERT INTO Promotions ({}) VALUES ({})'.format(
+                    ','.join(item_dict.keys()),
+                    ','.join(['?'] * len(item)))
+                cur.execute(sql, tuple(item_dict.values()))
+
+            #item_df = pd.DataFrame([item_dict], columns=item_dict.keys())
+            #output = pd.concat([output,item_df])
+
+
+    return output
+
+
+def TreeItem2Dict(item):
+    dict = {}
+    for child in item:
+
+        dict[child.tag] =  child.text
+
+    return dict
 
 def print_xml_node_childs(root):
     for child in root:
@@ -84,4 +124,6 @@ def print_xml_node_childs(root):
 
 
 if __name__ == '__main__':
-    ParsePromoXml(r'C:\Users\as\Sooper\SeleniumDownload\PromoFull7290027600007-271-202208190300.xml')
+    start_time = time.time()
+    df = ParsePromoXml(r'C:\Users\as\Sooper\SeleniumDownload\PromoFull7290027600007-271-202208190300.xml')
+    print("--- %s seconds ---" % (time.time() - start_time))
