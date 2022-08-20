@@ -4,9 +4,9 @@ import os
 from DB.XsdValidator import CharIntSplit
 import xml.etree.ElementTree as ET
 import time
+from DB.DbUtils import fillDictKeys, createTableFromList
 
-
-def PriceXml2Pandas(xmlfile):
+def PriceXmlToPandas(xmlfile):
 
     inner_data = pd.read_xml(xmlfile , xpath="/root/Items/Item")
     num_of_items = len(inner_data.index)
@@ -18,7 +18,7 @@ def PriceXml2Pandas(xmlfile):
     full_data = pd.concat([inner_data, outer_data], axis=1)
 
     return full_data
-def PromoXml2Pandas(xmlfile):
+def PromoXmlToPandas(xmlfile):
     inner_data = pd.read_xml(xmlfile, xpath="/root/Promotions/Promotion")
     num_of_items = len(inner_data.index)
 
@@ -29,30 +29,30 @@ def PromoXml2Pandas(xmlfile):
     full_data = pd.concat([inner_data, outer_data], axis=1)
 
     return full_data
-def Insert_dataframe_2_DB(dataframe, db, table):
+def InsertDataframeToDb(dataframe, db, table):
     conn = sqlite3.connect(db)
     dataframe.to_sql(table, conn, if_exists='append' )
-def Price_Insert_dir_2_DB(dir_path, db , table, general_type):
+def PriceInsertDirToDb(dir_path, db , table, general_type):
     for file in os.listdir(dir_path):
         full_file_path = os.path.join(dir_path , file)
         file_name, file_extension = os.path.splitext(file)
         file_type = CharIntSplit(file)[0]
 
         if file_extension == '.xml' and file_type == general_type:
-            Insert_dataframe_2_DB(PriceXml2Pandas(full_file_path),db , table)
+            InsertDataframeToDb(PriceXmlToPandas(full_file_path), db, table)
 
             print(f"Inserted {file} to {db}.")
-def Promo_Insert_dir_2_DB(dir_path, db , table, general_type):
+def PromoInsertDirToDb(dir_path, db , table, general_type):
     for file in os.listdir(dir_path):
         full_file_path = os.path.join(dir_path , file)
         file_name, file_extension = os.path.splitext(file)
         file_type = CharIntSplit(file)[0]
 
         if file_extension == '.xml' and file_type == general_type:
-            Insert_dataframe_2_DB(PromoXml2Pandas(full_file_path),db , table)
+            InsertDataframeToDb(PromoXmlToPandas(full_file_path), db, table)
 
             print(f"Inserted {file} to {db}.")
-def ParsePromoXml(promoxmlfile):
+def ParsePromoXml(promoxmlfile , colNames):
     db = sqlite3.connect(r'C:\Users\as\Sooper\DB\db\PromoFull.db')
     cur = db.cursor()
 
@@ -81,41 +81,26 @@ def ParsePromoXml(promoxmlfile):
 
         for item in promo_items:
             item.extend(promo)
-            #print_xml_node_childs(item)
+            #PrintXmlNodeChilds(item)
 
-            item_dict = TreeItem2Dict(item)
-
-
-
-            if create ==True:
-                df = pd.DataFrame.from_dict(item_dict, orient = 'index')
-                df = df.transpose()
-
-                Insert_dataframe_2_DB(df, r'C:\Users\as\Sooper\DB\db\PromoFull.db','Promotions')
-                create = False
-
-            else:
-                sql = 'INSERT INTO Promotions ({}) VALUES ({})'.format(
-                    ','.join(item_dict.keys()),
-                    ','.join(['?'] * len(item)))
-                cur.execute(sql, tuple(item_dict.values()))
+            item_dict = TreeItemToDict(item)
+            item_dict = fillDictKeys(colNames, item_dict)
+            sql = 'INSERT INTO Promotions ({}) VALUES ({})'.format(
+                ','.join(item_dict.keys()),
+                ','.join(['?'] * len(item)))
+            cur.execute(sql, tuple(item_dict.values()))
 
             #item_df = pd.DataFrame([item_dict], columns=item_dict.keys())
             #output = pd.concat([output,item_df])
 
 
     return output
-
-
-def TreeItem2Dict(item):
+def TreeItemToDict(item):
     dict = {}
     for child in item:
-
         dict[child.tag] =  child.text
-
     return dict
-
-def print_xml_node_childs(root):
+def PrintXmlNodeChilds(root):
     for child in root:
         print(ET.tostring(child))
 
@@ -125,5 +110,8 @@ def print_xml_node_childs(root):
 
 if __name__ == '__main__':
     start_time = time.time()
-    df = ParsePromoXml(r'C:\Users\as\Sooper\SeleniumDownload\PromoFull7290027600007-271-202208190300.xml')
+    colNames = ['ItemCode', 'ItemType', 'IsGiftItem', 'PromotionId', 'AllowMultipleDiscounts', 'PromotionDescription', 'PromotionUpdateDate', 'PromotionStartDate', 'PromotionStartHour', 'PromotionEndDate', 'PromotionEndHour', 'IsWeightedPromo', 'MinQty', 'DiscountType', 'RewardType', 'DiscountRate', 'MinNoOfItemOfered', 'Clubs', 'AdditionalIsCoupon', 'AdditionalGiftCount', 'AdditionalIsTotal', 'AdditionalIsActive']
+
+    createTableFromList('./db/try.db', 'try1', colNames)
+    df = ParsePromoXml(r'C:\Users\as\Sooper\SeleniumDownload\PromoFull7290027600007-271-202208190300.xml', colNames)
     print("--- %s seconds ---" % (time.time() - start_time))
