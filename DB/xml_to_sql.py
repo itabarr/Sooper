@@ -88,11 +88,12 @@ def insert_promo_xml_to_db(promo_xml_file, db_path, table_name):
             # create a single data atom of 'item/promotion/outer-data" dict
             item_dict = tree_item_to_dict(item)
             item_dict = fill_dict_keys(ordered_columns_names, item_dict)
-
+            item_dict['PromotionDescription'] = 'unknown'
             sql = 'INSERT INTO {}'.format(table_name) + '({}) VALUES ({})'.format(
                 ','.join(item_dict.keys()),
-                ','.join(['?'] * len(item)))
-            cur.execute(sql, tuple(item_dict.values()))
+                ','.join(item_dict.values()))
+
+            cur.execute(sql)
 
             print("Entered to db.")
 
