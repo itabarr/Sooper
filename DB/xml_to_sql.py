@@ -1,10 +1,16 @@
+#TODO : Find way to resuce promo sql - allocate colums according to types, see if there is non usable data
+#TODO: Implement fill dict for prices xml
+#TODO: Add stores.xml insertion to db
+
+
 import pandas as pd
 import sqlite3
 import os
 from DB.XsdValidator import CharIntSplit
 import xml.etree.ElementTree as ET
 import time
-from DB.db_utils import fill_dict_keys, create_table_from_list , get_ordered_columns_names_from_table
+from DB.db_utils import fill_dict_keys, create_table_from_list , get_ordered_columns_names_from_table,\
+    tree_item_to_dict, fix_dict_values
 
 def prices_xml_to_panda_dataframe(xml_file):
 
@@ -49,15 +55,17 @@ def insert_promo_xml_from_dir_to_db(dir_path, db, table, promo_type="PromoFull")
         file_type = CharIntSplit(file)[0]
 
         if file_extension == '.xml' and file_type == promo_type:
-            insert_panda_dataframe_to_db(promo_xml_to_panda_dataframe(full_file_path), db, table)
+            try:
+                insert_promo_xml_to_db(full_file_path,db , table)
 
-            print(f"Inserted {file} to {db}.")
+                print(f"Inserted {file} to {db}.")
+            except Exception as err:
+                print(f'{file}' , err)
 def insert_promo_xml_to_db(promo_xml_file, db_path, table_name):
     # extracting promos xm; data and inserting to sql lite db.
 
     # connect to sql db.
-    db = sqlite3.connect(db_path)
-    cur = db.cursor()
+    conn = sqlite3.connect(db_path)
 
     # get ordered data columns from table
     ordered_columns_names = get_ordered_columns_names_from_table(db_path, table_name)
@@ -88,28 +96,16 @@ def insert_promo_xml_to_db(promo_xml_file, db_path, table_name):
             # create a single data atom of 'item/promotion/outer-data" dict
             item_dict = tree_item_to_dict(item)
             item_dict = fill_dict_keys(ordered_columns_names, item_dict)
-            item_dict['PromotionDescription'] = 'unknown'
-            sql = 'INSERT INTO {}'.format(table_name) + '({}) VALUES ({})'.format(
-                ','.join(item_dict.keys()),
-                ','.join(item_dict.values()))
+            item_dict = fix_dict_values(item_dict)
 
-            cur.execute(sql)
+            #insert data to sql
+            s_ = "','".join(item_dict.values())
+            sql = f"INSERT INTO {table_name} VALUES ('{s_}')"
+            conn.execute(sql)
 
-            print("Entered to db.")
+    conn.commit()
+    return conn
 
-
-    return output
-def tree_item_to_dict(tree_item):
-    dict = {}
-    for child in tree_item:
-        dict[child.tag] =  child.text
-    return dict
-def print_xml_node_childs(root_tree_elem):
-    for child in root_tree_elem:
-        print(ET.tostring(child))
-
-    print( )
-    print( )
 
 if __name__ == '__main__':
 
@@ -123,11 +119,15 @@ if __name__ == '__main__':
                              'MinQty', 'DiscountType', 'RewardType', 'DiscountRate',
                              'MinNoOfItemOfered', 'Clubs', 'AdditionalIsCoupon', 'AdditionalGiftCount',
                              'AdditionalIsTotal', 'AdditionalIsActive']
-    PROMOFULL_XML = r'C:\Users\as\Sooper\SeleniumDownload\PromoFull7290027600007-027-202208190300.xml'
+    PROMOFULL_XML = r'C:\Users\as\Sooper\SeleniumDownload\PromoFull7290027600007-013-202208190300.xml'
+    DIR_PATH = r'C:\Users\as\Sooper\SeleniumDownload'
+
     start_time = time.time()
 
     create_table_from_list(DB_PATH,TABLE_NAME,ORDERED_PRICE_COLUMNS)
 
-    insert_promo_xml_to_db(PROMOFULL_XML,DB_PATH,TABLE_NAME)
 
+    #insert_promo_xml_to_db(PROMOFULL_XML, DB_PATH , TABLE_NAME)
+
+    insert_promo_xml_from_dir_to_db(DIR_PATH, DB_PATH,TABLE_NAME)
     print("--- %s seconds ---" % (time.time() - start_time))

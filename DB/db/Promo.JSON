@@ -1,0 +1,91 @@
+{
+  "1": {
+    "name": "ItemCode",
+    "type": "d"
+  },
+  "2": {
+    "name": "ItemType",
+    "type": "d"
+  },
+  "3": {
+    "name": "IsGiftItem",
+    "type": "d"
+  },
+  "4": {
+    "name": "PromotionId",
+    "type": "d"
+  },
+  "5": {
+    "name": "AllowMultipleDiscounts",
+    "type": "d"
+  },
+  "6": {
+    "name": "PromotionDescription",
+    "type": "d"
+  },
+  "7": {
+    "name": "PromotionUpdateDate",
+    "type": "d"
+  },
+  "8": {
+    "name": "PromotionStartDate",
+    "type": "d"
+  },
+  "9": {
+    "name": "PromotionStartHour",
+    "type": "d"
+  },
+  "10": {
+    "name": "PromotionEndDate",
+    "type": "d"
+  },
+  "11": {
+    "name": "PromotionEndHour",
+    "type": "d"
+  },
+  "12": {
+    "name": "IsWeightedPromo",
+    "type": "d"
+  },
+  "13": {
+    "name": "MinQty",
+    "type": "d"
+  },
+  "14": {
+    "name": "DiscountType",
+    "type": "d"
+  },
+  "15": {
+    "name": "RewardType",
+    "type": "d"
+  },
+  "16": {
+    "name": "DiscountRate",
+    "type": "d"
+  },
+  "17": {
+    "name": "MinNoOfItemOfered",
+    "type": "d"
+  },
+  "18": {
+    "name": "Clubs",
+    "type": "d"
+  },
+  "19": {
+    "name": "AdditionalIsCoupon",
+    "type": "d"
+  },
+  "20": {
+    "name": "AdditionalGiftCount",
+    "type": "d"
+  },
+  "21": {
+    "name": "AdditionalIsTotal",
+    "type": "d"
+  },
+  "22": {
+    "name": "AdditionalIsActive",
+    "type": "d"
+  }
+  
+}
