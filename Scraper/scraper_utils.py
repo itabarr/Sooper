@@ -2,21 +2,21 @@ import os
 import shutil
 import gzip
 
-def EmptyDir(path):
+def empty_dir(path):
     for f in os.listdir(path):
         os.remove(os.path.join(path, f))
-    number_files = CountNumOfFiles(path)
+    number_files = count_num_of_files(path)
 
     if number_files == 0:
         return 'SUCCESS'
 
     else:
         raise Exception("Could not empty folder.")
-def CountNumOfFiles(path):
+def count_num_of_files(path):
     lst = os.listdir(path)  # your directory path
     number_files = len(lst)
     return number_files
-def ExtractAndSaveGzip(gzFilePath):
+def extract_and_save_gzip(gzFilePath):
     file_name, file_extension = os.path.splitext(gzFilePath)
 
     if file_extension != '.gz':
@@ -27,8 +27,8 @@ def ExtractAndSaveGzip(gzFilePath):
         with open(file_name, 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
 
-    AddXmlExtension(f_out.name)
-def AddXmlExtension(path):
+    add_xml_extension(f_out.name)
+def add_xml_extension(path):
     file_name, file_extension = os.path.splitext(path)
 
     if file_extension  == '.xml':
@@ -36,12 +36,12 @@ def AddXmlExtension(path):
 
     new_file_name = file_name +'.xml'
     os.rename(file_name, new_file_name)
-def ExtractDir(dir_path):
+def extract_dir(dir_path):
     for file in os.listdir(dir_path):
         file_name, file_extension = os.path.splitext(file)
 
         if file_extension == '.gz':
-            ExtractAndSaveGzip(os.path.join(dir_path, file))
+            extract_and_save_gzip(os.path.join(dir_path, file))
 
 
 

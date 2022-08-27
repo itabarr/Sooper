@@ -3,31 +3,30 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import time
-from Scraper.ScraperUtils import *
+from scraper.scraper_utils import *
 
-def DownloadAllPages(DownloadPath , MainUrl):
+def download_all_pages(download_path, main_url):
 
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
     prefs = {"profile.default_content_settings.popups": 0,
              "download.default_directory":
-                 DownloadPath,  # IMPORTANT - ENDING SLASH V IMPORTANT
+                 download_path,  # IMPORTANT - ENDING SLASH V IMPORTANT
              "directory_upgrade": True}
     options.add_experimental_option("prefs", prefs)
 
     driver = webdriver.Chrome(service=Service('./chromedriver.exe'), options=options)
 
-
-    EmptyDir(DownloadPath)
-    driver.get(MainUrl)
-    last_page_num = GetLastPage(driver)
+    empty_dir(download_path)
+    driver.get(main_url)
+    last_page_num = get_last_page(driver)
 
     PageNum = 1
     while True:
         print(f'Download page number {PageNum}.')
-        curUrl = MainUrl + str(PageNum)
+        curUrl = main_url + str(PageNum)
 
-        numOfFiles = DownloadOnePage(curUrl, driver)
+        numOfFiles = download_one_page(curUrl, driver)
         if numOfFiles == 0:
             break
 
@@ -36,11 +35,9 @@ def DownloadAllPages(DownloadPath , MainUrl):
             break
         PageNum += 1
     time.sleep(5)
-
-
-def DownloadOnePage(Url, driver):
+def download_one_page(url, driver):
     time.sleep(5)
-    driver.get(Url)
+    driver.get(url)
     time.sleep(5)
 
     LinksElements = driver.find_elements(By.LINK_TEXT, "לחץ להורדה")
@@ -48,17 +45,15 @@ def DownloadOnePage(Url, driver):
         LinkElement.click()
 
     return len(LinksElements)
-
-
-def GetLastPage(driver):
+def get_last_page(driver):
     elem = driver.find_element(By.LINK_TEXT, ">>")
     last_page_num = int(elem.get_attribute('href').split('=')[-1])
 
     return last_page_num
 
 if __name__ == '__main__':
-    MainUrl = 'http://prices.shufersal.co.il/?page='
-    DownloadPath = r'C:\Users\as\Sooper\SeleniumDownload'
+    MAIN_URL = 'http://prices.shufersal.co.il/?page='
+    DOWNLOAD_PATH = r'C:\Users\as\Sooper\SeleniumDownload'
 
-    DownloadAllPages(DownloadPath, MainUrl)
-    ExtractDir(DownloadPath)
+    download_all_pages(DOWNLOAD_PATH, MAIN_URL)
+    extract_dir(DOWNLOAD_PATH)

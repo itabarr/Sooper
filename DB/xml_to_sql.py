@@ -6,7 +6,7 @@
 import pandas as pd
 import sqlite3
 import os
-from DB.XsdValidator import CharIntSplit
+from DB.xsd_validator import char_int_split
 import xml.etree.ElementTree as ET
 import time
 from DB.db_utils import fill_dict_keys, create_table_from_list , get_ordered_columns_names_from_table,\
@@ -42,7 +42,7 @@ def insert_prices_xml_from_dir_to_db(dir_path, db, table, prices_type="PriceFull
     for file in os.listdir(dir_path):
         full_file_path = os.path.join(dir_path , file)
         file_name, file_extension = os.path.splitext(file)
-        file_type = CharIntSplit(file)[0]
+        file_type = char_int_split(file)[0]
 
         if file_extension == '.xml' and file_type == prices_type:
             insert_panda_dataframe_to_db(prices_xml_to_panda_dataframe(full_file_path), db, table)
@@ -52,7 +52,7 @@ def insert_promo_xml_from_dir_to_db(dir_path, db, table, promo_type="PromoFull")
     for file in os.listdir(dir_path):
         full_file_path = os.path.join(dir_path , file)
         file_name, file_extension = os.path.splitext(file)
-        file_type = CharIntSplit(file)[0]
+        file_type = char_int_split(file)[0]
 
         if file_extension == '.xml' and file_type == promo_type:
             try:

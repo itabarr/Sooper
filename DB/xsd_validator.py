@@ -2,7 +2,7 @@ import xmlschema
 import os
 import re
 
-def validateXmlFile(xml_path, xsd_path):
+def validate_xml_file(xml_path, xsd_path):
     schema = xmlschema.XMLSchema(xsd_path)
     try:
         result = schema.validate(xml_path)
@@ -10,23 +10,20 @@ def validateXmlFile(xml_path, xsd_path):
 
     except Exception as e:
         return e
-
-def CharIntSplit(s):
+def char_int_split(s):
     return re.split(r"\d+", s)
-
-
-def validateDir(dir_path, xsd_path, toprint = None):
+def validate_dir(dir_path, xsd_path, to_print=None):
     xsd_type = os.path.basename(xsd_path).split('.')[0]
 
     for file in os.listdir(dir_path):
         full_file_path = os.path.join(dir_path , file)
         file_name, file_extension = os.path.splitext(file)
-        file_type = CharIntSplit(file)[0]
+        file_type = char_int_split(file)[0]
 
         if file_extension == '.xml' and file_type == xsd_type:
-            val_result = validateXmlFile(full_file_path, xsd_path)
+            val_result = validate_xml_file(full_file_path, xsd_path)
 
-            if toprint == True:
+            if to_print == True:
                 print(f"File name {file} validation status is: {val_result}")
 
 
@@ -42,4 +39,4 @@ if __name__ == '__main__':
     xsd_path = r'C:\Users\as\Sooper\DB\xsd\PriceFull.xsd'
     dir_path = r'C:\Users\as\Sooper\SeleniumDownload'
 
-    print(validateDir(dir_path ,xsd_path, toprint= True))
+    print(validate_dir(dir_path, xsd_path, to_print=True))
